@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kriperovich — Портфолио</title>
+<style>
+  /* ===== ГЛОБАЛЬНЫЙ СБРОС ===== */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Courier New', 'Fixedsys', monospace;
+    background: #008080; /* классический teal рабочий стол */
+    height: 100vh; overflow: hidden;
+    display: flex; flex-direction: column;
+    user-select: none; cursor: default;
+    font-size: 14px;
+  }
+
+  /* ===== РАБОЧИЙ СТОЛ ===== */
+  .desktop {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    padding: 16px; position: relative;
+  }
+  .desktop-icons {
+    position: absolute; top: 16px; left: 16px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .desktop-icon {
+    width: 72px; text-align: center; color: #fff;
+    font-size: 11px; text-shadow: 1px 1px 0 #000;
+    padding: 4px; cursor: pointer;
+  }
+  .desktop-icon:hover { background: rgba(0,0,128,0.4); outline: 1px dotted #fff; }
+  .desktop-icon img, .desktop-icon .icon-placeholder {
+    display: block; width: 32px; height: 32px; margin: 0 auto 4px;
+    background: #c0c0c0; border: 1px solid #fff; border-bottom-color: #808080; border-right-color: #808080;
+  }
+  .desktop-icon .icon-placeholder { line-height: 32px; font-size: 18px; color: #000; background: #c0c0c0; }
+
+  /* ===== ОКНО ===== */
+  .window {
+    width: 780px; max-width: 95vw; max-height: 85vh;
+    display: flex; flex-direction: column;
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #dfdfdf #404040 #404040 #dfdfdf;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
+    position: relative;
+  }
+
+  /* ===== ЗАГОЛОВОК ОКНА ===== */
+  .title-bar {
+    display: flex; align-items: center;
+    background: linear-gradient(90deg, #000080, #1084d0);
+    color: #fff; font-weight: bold; font-size: 13px;
+    padding: 3px 4px; height: 28px;
+    cursor: move;
+  }
+  .title-bar .title-icon {
+    width: 16px; height: 16px; margin-right: 6px;
+    background: #c0c0c0; border: 1px solid #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10px; color: #000; flex-shrink: 0;
+  }
+  .title-bar .title-text { flex: 1; white-space: nowrap; overflow: hidden; }
+  .title-bar .title-buttons { display: flex; gap: 2px; }
+  .title-bar .title-buttons button {
+    width: 20px; height: 20px; padding: 0; font-size: 11px; font-weight: bold;
+    background: #c0c0c0; border: 2px solid; cursor: pointer;
+    border-color: #fff #808080 #808080 #fff;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1; font-family: 'Courier New', monospace;
+  }
+  .title-bar .title-buttons button:active {
+    border-color: #808080 #fff #fff #808080;
+  }
+
+  /* ===== МЕНЮ (Вкладки) ===== */
+  .menu-bar {
+    display: flex; background: #c0c0c0;
+    border-bottom: 1px solid #808080;
+    padding: 2px 2px 0 2px;
+  }
+  .menu-bar button {
+    padding: 4px 16px; font-size: 12px; font-family: 'Courier New', monospace;
+    background: #c0c0c0; border: 2px solid; cursor: pointer;
+    border-color: #fff #808080 #808080 #fff;
+    margin-right: 2px; margin-bottom: -1px; position: relative;
+  }
+  .menu-bar button:active, .menu-bar button.active-tab {
+    border-color: #808080 #fff #fff #808080;
+    background: #d4d0c8; padding: 5px 15px 3px 17px;
+  }
+  .menu-bar button.active-tab {
+    background: #d4d0c8;
+    border-bottom-color: #d4d0c8;
+    z-index: 1;
+  }
+
+  /* ===== СОДЕРЖИМОЕ ОКНА ===== */
+  .window-body {
+    flex: 1; overflow-y: auto; padding: 16px;
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+    background: #c0c0c0;
+    min-height: 300px;
+  }
+  .window-body::-webkit-scrollbar { width: 16px; }
+  .window-body::-webkit-scrollbar-track { background: #c0c0c0; border: 1px inset #808080; }
+  .window-body::-webkit-scrollbar-thumb { background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; }
+
+  /* ===== СТРАНИЦЫ ===== */
+  .page { display: none; }
+  .page.active { display: block; }
+  .page h2 {
+    font-size: 18px; margin-bottom: 12px;
+    border-bottom: 1px solid #808080; padding-bottom: 4px;
+  }
+  .page p { margin-bottom: 8px; line-height: 1.5; }
+
+  /* Группа */
+  .group-box {
+    border: 2px solid; border-color: #808080 #fff #fff #808080;
+    padding: 12px; margin-bottom: 12px; position: relative;
+  }
+  .group-box legend {
+    font-weight: bold; font-size: 12px; padding: 0 6px;
+    position: relative; top: -20px; background: #c0c0c0;
+    display: inline-block;
+  }
+
+  /* ===== ССЫЛКИ (стиль 98) ===== */
+  .link-98 {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 8px; cursor: pointer; text-decoration: none;
+    color: #000; font-family: 'Courier New', monospace;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    background: #c0c0c0; font-size: 13px; margin: 2px;
+  }
+  .link-98:active {
+    border-color: #808080 #fff #fff #808080;
+  }
+  .link-98:hover { background: #d4d0c8; }
+
+  /* ===== СТАТУСНАЯ СТРОКА (сноска) ===== */
+  .status-bar {
+    display: flex; background: #c0c0c0; font-size: 11px;
+    border-top: 1px solid #808080;
+    padding: 2px 4px; gap: 4px;
+  }
+  .status-bar .status-item {
+    border: 1px inset #808080; padding: 1px 6px; background: #d4d0c8;
+  }
+
+  /* ===== ПАНЕЛЬ ЗАДАЧ ===== */
+  .taskbar {
+    display: flex; align-items: center; background: #c0c0c0;
+    border-top: 2px solid #fff; padding: 2px 4px; height: 36px;
+    gap: 4px;
+  }
+  .start-btn {
+    display: flex; align-items: center; gap: 4px;
+    padding: 2px 10px; font-weight: bold; font-size: 13px; font-family: 'Courier New', monospace;
+    background: #c0c0c0; border: 2px solid; cursor: pointer;
+    border-color: #fff #808080 #808080 #fff;
+    height: 28px;
+  }
+  .start-btn:active {
+    border-color: #808080 #fff #fff #808080;
+  }
+  .start-btn .logo { font-size: 18px; line-height: 1; }
+  .taskbar-divider {
+    width: 2px; height: 26px; background: #808080;
+    border-right: 1px solid #fff;
+  }
+  .taskbar-items {
+    flex: 1; display: flex; gap: 2px; overflow-x: auto;
+  }
+  .taskbar-items::-webkit-scrollbar { height: 6px; }
+  .taskbar-items::-webkit-scrollbar-thumb { background: #808080; border: 1px solid #fff; }
+  .taskbar-item {
+    padding: 2px 12px; font-size: 11px; background: #c0c0c0;
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    cursor: pointer; white-space: nowrap; max-width: 160px; overflow: hidden; text-overflow: ellipsis;
+    font-family: 'Courier New', monospace;
+  }
+  .taskbar-item.active-task {
+    border-color: #808080 #fff #fff #808080;
+    background: #d4d0c8;
+  }
+  .taskbar-time {
+    font-size: 11px; padding: 2px 6px;
+    border: 1px inset #808080; background: #d4d0c8;
+    white-space: nowrap; font-family: 'Courier New', monospace;
+  }
+
+  /* ===== CITATA ДНЯ ===== */
+  .quote-box { font-style: italic; padding: 8px; background: #ffffcc; border: 1px dashed #808080; margin-bottom: 12px; }
+
+  /* ===== ССЫЛКИ НА ГИТХАБ / СОЦСЕТИ ===== */
+  .social-grid, .github-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px; margin-top: 8px;
+  }
+
+  /* ===== КОНТАКТНАЯ ФОРМА ===== */
+  .form-row { margin-bottom: 8px; }
+  .form-row label { display: block; font-size: 12px; margin-bottom: 2px; }
+  .form-row input, .form-row textarea {
+    width: 100%; padding: 4px 6px;
+    border: 2px inset #808080; background: #fff;
+    font-family: 'Courier New', monospace; font-size: 13px;
+  }
+  .form-row textarea { resize: vertical; min-height: 60px; }
+  .btn-submit {
+    padding: 6px 24px; font-family: 'Courier New', monospace; font-size: 13px;
+    background: #c0c0c0; border: 2px solid;
+    border-color: #fff #808080 #808080 #fff; cursor: pointer; font-weight: bold;
+  }
+  .btn-submit:active { border-color: #808080 #fff #fff #808080; }
+
+  /* ===== КНОПКА КОПИРОВАТЬ ===== */
+  .copy-btn {
+    background: #c0c0c0; border: 2px solid; cursor: pointer; padding: 0 6px;
+    border-color: #fff #808080 #808080 #fff; font-size: 14px; line-height: 1.6;
+    vertical-align: middle; font-family: 'Courier New', monospace;
+  }
+  .copy-btn:active { border-color: #808080 #fff #fff #808080; }
+  .copy-btn.copied { background: #0a0; color: #fff; }
+
+  /* ===== СЧЁТЧИК ===== */
+  .counter {
+    background: #000; color: #0f0; padding: 2px 8px;
+    font-family: 'Courier New', monospace; font-size: 13px;
+    border: 1px inset #808080; display: inline-block;
+  }
+
+  /* ===== МИГАЮЩИЙ КУРСОР ===== */
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+  .blink { animation: blink 1s step-end infinite; }
+
+  /* ===== WIN98 ТУМБЛЕР ===== */
+  .toggle-row {
+    display: flex; align-items: center; gap: 10px; padding: 6px 0;
+    border-bottom: 1px solid #dfdfdf;
+  }
+  .toggle-row:last-child { border-bottom: none; }
+  .toggle-row label { cursor: pointer; font-size: 13px; flex: 1; }
+  .toggle-row .desc { font-size: 11px; color: #808080; }
+
+  .win98-toggle { display: none; }
+  .win98-toggle + label::before {
+    content: ''; display: inline-block; width: 32px; height: 14px;
+    background: #c0c0c0; border: 2px solid;
+    border-color: #808080 #fff #fff #808080;
+    vertical-align: middle; margin-right: 8px;
+    position: relative; cursor: pointer; transition: 0s;
+  }
+  .win98-toggle + label::after {
+    content: ''; position: absolute; width: 12px; height: 10px;
+    background: #c0c0c0; border: 2px solid;
+    border-color: #fff #808080 #808080 #fff;
+    left: -18px; top: -1px; transition: 0s;
+  }
+  .win98-toggle:checked + label::after {
+    left: 6px; background: #000080;
+    border-color: #000080 #000080 #000080 #000080;
+  }
+
+  /* Чекбокс-тумблер (98-стайл) */
+  .toggle-wrap { display: flex; align-items: center; gap: 8px; position: relative; }
+  .toggle-wrap input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none;
+    width: 14px; height: 14px; margin: 0;
+    background: #fff; border: 2px inset #808080; cursor: pointer;
+    flex-shrink: 0;
+  }
+  .toggle-wrap input[type="checkbox"]:checked {
+    background: #fff;
+  }
+  .toggle-wrap input[type="checkbox"]:checked::after {
+    content: '✔'; display: block; font-size: 12px; line-height: 1;
+    text-align: center; color: #000; font-weight: bold;
+  }
+
+  /* Анимация поворота всей страницы */
+  @keyframes spin360 { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .spin-page {
+    animation: spin360 0.8s ease-out !important;
+    transform-origin: 50% 50% !important;
+  }
+
+  /* Бинарное конфети */
+  .binary-particle {
+    position: fixed; pointer-events: none; z-index: 9999;
+    font-family: 'Courier New', monospace; font-weight: bold;
+    font-size: 16px; color: #00ff00; text-shadow: 0 0 4px #00ff00;
+  }
+
+  /* ===== СВЁРНУТОЕ ОКНО ===== */
+  .window.minimized { display: none !important; }
+  .paint-window.minimized { display: none !important; }
+
+  /* ===== ПЕЙНТ ===== */
+  .paint-window {
+    position: absolute; width: 560px; max-width: 90vw; z-index: 100;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #dfdfdf #404040 #404040 #dfdfdf;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
+    display: none; flex-direction: column;
+    top: 40px; left: 80px;
+  }
+  .paint-window.open { display: flex; }
+  .paint-canvas-wrap {
+    background: #fff; margin: 8px; border: 2px inset #808080;
+    overflow: hidden; cursor: crosshair;
+  }
+  .paint-canvas-wrap canvas { display: block; width: 100%; height: 280px; background: #fff; }
+  .paint-toolbar {
+    display: flex; align-items: center; gap: 4px; padding: 4px 8px;
+    border-bottom: 1px solid #808080; flex-wrap: wrap;
+  }
+  .paint-toolbar .color-btn {
+    width: 22px; height: 22px; border: 2px solid;
+    border-color: #fff #808080 #808080 #fff; cursor: pointer;
+  }
+  .paint-toolbar .color-btn:active { border-color: #808080 #fff #fff #808080; }
+  .paint-toolbar .color-btn.active { border-color: #000 !important; }
+  .paint-toolbar .tool-btn {
+    padding: 2px 8px; font-size: 12px; font-family: 'Courier New', monospace;
+    background: #c0c0c0; border: 2px solid;
+    border-color: #fff #808080 #808080 #fff; cursor: pointer;
+  }
+  .paint-toolbar .tool-btn:active,
+  .paint-toolbar .tool-btn.active-tool { border-color: #808080 #fff #fff #808080; }
+  .paint-toolbar .sep { width: 1px; height: 20px; background: #808080; border-right: 1px solid #fff; }
+
+  /* ===== PIXELS ===== */
+  .pixels-window {
+    position: absolute; width: 600px; max-width: 92vw; z-index: 100;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #dfdfdf #404040 #404040 #dfdfdf;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
+    display: none; flex-direction: column;
+    top: 60px; left: 120px;
+  }
+  .pixels-window.open { display: flex; }
+  .pixels-window.minimized { display: none !important; }
+  .pixels-canvas-wrap {
+    background: #808080; margin: 8px; border: 2px inset #808080;
+    overflow: hidden; cursor: grab;
+    min-height: 300px; max-height: 420px; position: relative;
+  }
+  .pixels-canvas-wrap.panning { cursor: grabbing; }
+  .pixels-canvas-wrap canvas { display: block; image-rendering: pixelated; background: #fff; }
+  .pixels-toolbar {
+    display: flex; align-items: center; gap: 4px; padding: 4px 8px;
+    border-bottom: 1px solid #808080; flex-wrap: wrap;
+  }
+  .pixels-toolbar .color-btn {
+    width: 22px; height: 22px; border: 2px solid;
+    border-color: #fff #808080 #808080 #fff; cursor: pointer;
+  }
+  .pixels-toolbar .color-btn:active { border-color: #808080 #fff #fff #808080; }
+  .pixels-toolbar .color-btn.active { border-color: #000 !important; }
+  .pixels-zoom-btn {
+    padding: 2px 8px; font-size: 14px; font-family: 'Courier New', monospace;
+    background: #c0c0c0; border: 2px solid;
+    border-color: #fff #808080 #808080 #fff; cursor: pointer;
+  }
+  .pixels-zoom-btn:active { border-color: #808080 #fff #fff #808080; }
+  .pixels-cooldown {
+    font-size: 11px; color: #808080; margin-left: auto;
+  }
+  hr { border: none; border-top: 1px solid #808080; margin: 12px 0; }
+
+  /* адаптивность */
+  @media (max-width: 640px) {
+    .window { width: 100%; max-height: 90vh; }
+    .desktop-icons { display: none; }
+    .menu-bar { flex-wrap: wrap; }
+    .menu-bar button { flex: 1; min-width: 60px; font-size: 11px; padding: 4px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== РАБОЧИЙ СТОЛ ===== -->
+<div class="desktop">
+  <!-- Иконки рабочего стола -->
+  <div class="desktop-icons">
+    <div class="desktop-icon" onclick="switchPage('home')">
+      <div class="icon-placeholder">🏠</div>
+      Мои проекты
+    </div>
+    <div class="desktop-icon" onclick="switchPage('github')">
+      <div class="icon-placeholder">🐙</div>
+      GitHubs
+    </div>
+    <div class="desktop-icon" onclick="switchPage('social')">
+      <div class="icon-placeholder">💬</div>
+      Сос сети
+    </div>
+    <div class="desktop-icon" onclick="switchPage('contacts')">
+      <div class="icon-placeholder">✉️</div>
+      Контакты
+    </div>
+    <div class="desktop-icon" onclick="openPaint()">
+      <div class="icon-placeholder">🎨</div>
+      Paint
+    </div>
+    <div class="desktop-icon" onclick="openPixels()">
+      <div class="icon-placeholder">🎯</div>
+      Pixels
+    </div>
+  </div>
+
+  <!-- ===== ГЛАВНОЕ ОКНО ===== -->
+  <div class="window" id="mainWindow">
+    <!-- Заголовок окна -->
+    <div class="title-bar" id="titleBar">
+      <span class="title-icon">◆</span>
+      <span class="title-text" id="windowTitle">Kriperovich — Портфолио</span>
+      <span class="title-buttons">
+        <button onclick="minimizeWindow()">_</button>
+        <button onclick="restoreWindow()">□</button>
+        <button onclick="alert('¯\\_(ツ)_/¯')">✕</button>
+      </span>
+    </div>
+
+    <!-- Вкладки (меню) -->
+    <div class="menu-bar">
+      <button class="active-tab" data-page="home" onclick="switchPage('home')">🏠 Главная</button>
+      <button data-page="github" onclick="switchPage('github')">🐙 Гитахбы</button>
+      <button data-page="social" onclick="switchPage('social')">💬 Сос сети</button>
+      <button data-page="effects" onclick="switchPage('effects')">✨ Эффекты</button>
+      <button data-page="contacts" onclick="switchPage('contacts')">✉️ Контакты</button>
+    </div>
+
+    <!-- Тело окна -->
+    <div class="window-body" id="windowBody">
+
+      <!-- ========== ГЛАВНАЯ ========== -->
+      <div class="page active" id="page-home">
+        <h2>🖥️ Добро пожаловать!</h2>
+        <div class="quote-box">
+          "Лучший код — тот, который работает. А если ещё и смешно — вообще зашибись!"<br>
+          <span style="font-size:11px;color:#808080;">— Kriperovich, 2026</span>
+        </div>
+        <div class="group-box">
+          <legend>🧑‍💻 О себе</legend>
+          <p>Привет! Я <strong>Kriperovich</strong> — разработчик, ретро-энтузиаст и просто хороший человек.</p>
+          <p>Пишу код, делаю проекты, иногда коммичу. Этот сайт работает на технологии <strong>HTML 4.0</strong>... ну, почти.</p>
+          <p><span style="color:#808000;">▶</span> Статус: <strong>Online</strong> <span class="blink">_</span></p>
+        </div>
+        <div class="group-box">
+          <legend>📊 Статистика</legend>
+          <p>⭐ Проектов на GitHub (с трёх аккаунтов): <span class="counter" id="totalRepos">...</span></p>
+          <p>🔥 Коммитов всего (со всех трёх аккаунтов): <span class="counter" id="totalCommits">...</span></p>
+          <p>☕ Кружек кофе: <span class="counter">∞</span></p>
+        </div>
+        <p style="color:#808080;font-size:11px;text-align:center;margin-top:12px;">
+          © Kriperovich 2026. Лучше всего выглядит в Internet Explorer 5.0 ☺
+        </p>
+      </div>
+
+      <!-- ========== ГИТХАБЫ ========== -->
+      <div class="page" id="page-github">
+        <h2>🐙 Гитахбы</h2>
+        <p>Мои профили на гитхабе:</p>
+        <div class="group-box">
+          <legend>📦 Аккаунты</legend>
+          <div class="github-grid">
+            <a class="link-98" href="https://github.com/kriperovich" target="_blank">🐙 kriperovich</a>
+            <a class="link-98" href="https://github.com/kriperovich2" target="_blank">🐙 kriperovich2</a>
+            <a class="link-98" href="https://github.com/kriperovich3" target="_blank">🐙 kriperovich3</a>
+          </div>
+        </div>
+        <p style="font-size:12px;color:#808080;text-align:center;">(сраная двухвакторная аунтефикация)</p>
+      </div>
+
+      <!-- ========== СОС СЕТИ ========== -->
+      <div class="page" id="page-social">
+        <h2>💬 Сос сети</h2>
+        <div class="group-box">
+          <legend>🌐 Я в интернетах</legend>
+          <div class="social-grid">
+            <a class="link-98" href="https://www.youtube.com/@just_kriperovich" target="_blank">▶️ YouTube /just_kriperovich</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== ЭФФЕКТЫ ========== -->
+      <div class="page" id="page-effects">
+        <h2>✨ Эффекты</h2>
+        <p>Включай и выключай визуальные плюшки (работают на весь сайт):</p>
+        <div class="group-box">
+          <legend>⚙️ Настройки</legend>
+
+          <div class="toggle-row">
+            <div class="toggle-wrap">
+              <input type="checkbox" id="chkEmoji" checked onchange="toggleEffect('emoji', this.checked)">
+              <label for="chkEmoji">🖥️ Эмодзи за курсором</label>
+            </div>
+            <span class="desc">Пружинящая цепочка из компьютерных эмодзи</span>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-wrap">
+              <input type="checkbox" id="chkSpin" onchange="toggleEffect('spin', this.checked)">
+              <label for="chkSpin">🌀 Поворот на 360° при клике</label>
+            </div>
+            <span class="desc">Вся страница делает полный оборот при клике</span>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-wrap">
+              <input type="checkbox" id="chkBinary" onchange="toggleEffect('binary', this.checked)">
+              <label for="chkBinary">💚 Конфети из 0 и 1 при клике</label>
+            </div>
+            <span class="desc">Зелёные 0 и 1 сыплются при каждом клике (матрица-стайл)</span>
+          </div>
+
+        </div>
+        <p style="font-size:11px;color:#808080;text-align:center;">💡 Эффекты работают прямо сейчас — переключи и проверь на любой странице</p>
+      </div>
+
+      <!-- ========== КОНТАКТЫ ========== -->
+      <div class="page" id="page-contacts">
+        <h2>✉️ Контакты</h2>
+        <div class="group-box">
+          <legend>📞 Контакты</legend>
+          <p>✈️ Telegram: <strong>@cat7p</strong> <button class="copy-btn" onclick="copyToClipboard('@cat7p', this)">📋</button></p>
+          <p>🎮 Discord: <strong>kriperovich</strong> <button class="copy-btn" onclick="copyToClipboard('kriperovich', this)">📋</button></p>
+          <p>📧 Почта: <strong>nythmenmyty@gmail.com</strong> <button class="copy-btn" onclick="copyToClipboard('nythmenmyty@gmail.com', this)">📋</button></p>
+          <p style="padding-left:24px;">✉️ <strong>stiv.kovich@bl.ru</strong> <button class="copy-btn" onclick="copyToClipboard('stiv.kovich@bl.ru', this)">📋</button></p>
+        </div>
+      </div>
+
+    </div><!-- /window-body -->
+
+    <!-- Статусная строка -->
+    <div class="status-bar">
+      <span class="status-item" id="statusPage">📍 Главная</span>
+      <span class="status-item" style="flex:1;">🔄 Посещений: <span id="visitCount">0</span></span>
+      <span class="status-item">💾 Free space: 1.44 MB</span>
+    </div>
+  </div><!-- /window -->
+</div><!-- /desktop -->
+
+<!-- ===== ПЕЙНТ ===== -->
+<div class="paint-window" id="paintWindow">
+  <div class="title-bar" id="paintTitleBar">
+    <span class="title-icon">🎨</span>
+    <span class="title-text">Paint — Kriperovich</span>
+    <span class="title-buttons">
+      <button onclick="minimizePaint()">_</button>
+      <button onclick="restorePaint()">□</button>
+      <button onclick="closePaint()">✕</button>
+    </span>
+  </div>
+  <div class="paint-toolbar">
+    <span style="font-size:11px;font-weight:bold;margin-right:4px;">🎨 Цвет:</span>
+    <button class="color-btn active" data-color="#000000" style="background:#000;" onclick="pickColor(this)"></button>
+    <button class="color-btn" data-color="#ff0000" style="background:#f00;" onclick="pickColor(this)"></button>
+    <button class="color-btn" data-color="#0000ff" style="background:#00f;" onclick="pickColor(this)"></button>
+    <button class="color-btn" data-color="#00aa00" style="background:#0a0;" onclick="pickColor(this)"></button>
+    <button class="color-btn" data-color="#ffff00" style="background:#ff0;" onclick="pickColor(this)"></button>
+    <button class="color-btn" data-color="#ff8800" style="background:#f80;" onclick="pickColor(this)"></button>
+    <button class="color-btn" data-color="#ff00ff" style="background:#f0f;" onclick="pickColor(this)"></button>
+    <button class="color-btn" data-color="#ffffff" style="background:#fff;" onclick="pickColor(this)"></button>
+    <div class="sep"></div>
+    <button class="tool-btn active-tool" id="toolPencil" onclick="setPaintTool('pencil')">✏️</button>
+    <button class="tool-btn" id="toolEraser" onclick="setPaintTool('eraser')">🧹</button>
+    <div class="sep"></div>
+    <button class="tool-btn" onclick="clearPaint()">🗑️ Очистить</button>
+  </div>
+  <div class="paint-canvas-wrap">
+    <canvas id="paintCanvas" width="520" height="280"></canvas>
+  </div>
+</div>
+
+<!-- ===== PIXELS ===== -->
+<div class="pixels-window" id="pixelsWindow">
+  <div class="title-bar" id="pixelsTitleBar">
+    <span class="title-icon">🎯</span>
+    <span class="title-text" id="pixelsTitle">Pixels — 128×128</span>
+    <span class="title-buttons">
+      <button onclick="minimizePixels()">_</button>
+      <button onclick="restorePixels()">□</button>
+      <button onclick="closePixels()">✕</button>
+    </span>
+  </div>
+  <div class="pixels-toolbar">
+    <span style="font-size:11px;font-weight:bold;margin-right:4px;">🎨 Цвет:</span>
+    <button class="color-btn active" data-color="#000000" style="background:#000;" onclick="pixelsPickColor(this)"></button>
+    <button class="color-btn" data-color="#ff0000" style="background:#f00;" onclick="pixelsPickColor(this)"></button>
+    <button class="color-btn" data-color="#00ff00" style="background:#0f0;" onclick="pixelsPickColor(this)"></button>
+    <button class="color-btn" data-color="#0000ff" style="background:#00f;" onclick="pixelsPickColor(this)"></button>
+    <button class="color-btn" data-color="#ffff00" style="background:#ff0;" onclick="pixelsPickColor(this)"></button>
+    <button class="color-btn" data-color="#ff8800" style="background:#f80;" onclick="pixelsPickColor(this)"></button>
+    <button class="color-btn" data-color="#ff00ff" style="background:#f0f;" onclick="pixelsPickColor(this)"></button>
+    <button class="color-btn" data-color="#ffffff" style="background:#fff;" onclick="pixelsPickColor(this)"></button>
+    <div class="sep"></div>
+    <span style="font-size:11px;font-weight:bold;margin-right:4px;">🔍</span>
+    <button class="pixels-zoom-btn" onclick="pixelsZoomIn()">+</button>
+    <button class="pixels-zoom-btn" onclick="pixelsZoomOut()">−</button>
+    <span id="pixelsZoomLevel" style="font-size:11px;min-width:30px;">×4</span>
+    <div class="sep"></div>
+    <span class="pixels-cooldown" id="pixelsCooldown">✅ Готово</span>
+  </div>
+  <div class="pixels-canvas-wrap" id="pixelsCanvasWrap">
+    <canvas id="pixelsCanvas" width="512" height="512"></canvas>
+  </div>
+</div>
+
+<!-- ===== ПАНЕЛЬ ЗАДАЧ ===== -->
+<div class="taskbar">
+  <button class="start-btn" onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')">
+    <span class="logo">🪟</span> Пуск
+  </button>
+  <div class="taskbar-divider"></div>
+  <div class="taskbar-items">
+    <div class="taskbar-item active-task" id="taskbarMain">📄 Kriperovich — Портфолио</div>
+    <div class="taskbar-item" id="taskbarPaint" style="display:none;">🎨 Paint</div>
+    <div class="taskbar-item" id="taskbarPixels" style="display:none;">🎯 Pixels</div>
+  </div>
+  <div class="taskbar-time" id="taskbarClock">12:00</div>
+</div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+  // ========================================================================
+  // 🔥 FIREBASE REST API — облачная база (без SDK, работает из file://)
+  // ========================================================================
+  const FB = {
+    apiKey: "AIzaSyDLW1hx5sU8Vcsz7M5HE40joSIb_tJjVu8",
+    projectId: "kriperovich-fun",
+    baseUrl: "https://firestore.googleapis.com/v1/projects/kriperovich-fun/databases/(default)/documents",
+    ready: false
+  };
+
+  // -------------------------------------------------------------------
+  // 🔥 FIREBASE REST API — без сервера, из file:// работает
+  // -------------------------------------------------------------------
+  const FB_PROJECT = "kriperovich-fun";
+  const FB_KEY = "AIzaSyDLW1hx5sU8Vcsz7M5HE40joSIb_tJjVu8";
+  const FB_URL = "https://firestore.googleapis.com/v1/projects/" + FB_PROJECT + "/databases/(default)/documents";
+
+  async function fbFetch(method, path, body) {
+    const url = FB_URL + '/' + path + '?key=' + FB_KEY;
+    const opts = { method, headers: {} };
+    if (body) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
+    const r = await fetch(url, opts);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.headers.get('content-type')?.includes('json') ? r.json() : null;
+  }
+
+  // --- Visits counter ---
+  async function fbAddVisit() {
+    try {
+      let next = 1;
+      try {
+        const d = await fbFetch('GET', 'counters/visits');
+        if (d?.fields?.count) next = (parseInt(d.fields.count.integerValue) || 0) + 1;
+      } catch (_) { /* first visit — doc doesn't exist yet */ }
+      await fbFetch('PATCH', 'counters/visits', {
+        fields: { count: { integerValue: String(next) } }
+      });
+      localStorage.setItem('kriperovich_visits', String(next));
+      return next;
+    } catch (e) {
+      console.warn('⚠️ Firebase error:', e);
+      const k = 'kriperovich_visits';
+      let v = parseInt(localStorage.getItem(k)) || 0;
+      v++; localStorage.setItem(k, v);
+      return v;
+    }
+  }
+
+  async function fbGetVisits() {
+    try {
+      const d = await fbFetch('GET', 'counters/visits');
+      if (d?.fields?.count) return parseInt(d.fields.count.integerValue) || 0;
+    } catch (_) {}
+    return parseInt(localStorage.getItem('kriperovich_visits')) || 0;
+  }
+
+  // --- Pixels ---
+  async function fbLoadPixels() {
+    try {
+      const d = await fbFetch('GET', 'pixels/grid');
+      if (d?.fields?.grid?.stringValue) return JSON.parse(d.fields.grid.stringValue);
+    } catch (_) {}
+    const s = localStorage.getItem('kriperovich_pixels');
+    return s ? JSON.parse(s) : null;
+  }
+
+  async function fbSavePixels(grid) {
+    try {
+      await fbFetch('PATCH', 'pixels/grid', {
+        fields: { grid: { stringValue: JSON.stringify(grid) } }
+      });
+    } catch (_) {
+      localStorage.setItem('kriperovich_pixels', JSON.stringify(grid));
+    }
+  }
+
+  // --- Навигация ---
+  const pageNames = {
+    home: 'Главная',
+    github: 'Гитахбы',
+    social: 'Сос сети',
+    effects: 'Эффекты',
+    contacts: 'Контакты',
+  };
+  const pageIcons = { home: '🏠', github: '🐙', social: '💬', effects: '✨', contacts: '✉️' };
+
+  async function switchPage(page) {
+    // Скрываем все страницы
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // Показываем нужную
+    const target = document.getElementById('page-' + page);
+    if (target) target.classList.add('active');
+
+    // Обновляем табы
+    document.querySelectorAll('.menu-bar button').forEach(btn => {
+      btn.classList.toggle('active-tab', btn.dataset.page === page);
+    });
+
+    // Обновляем таскбар-статус
+    document.getElementById('statusPage').textContent = '📍 ' + (pageNames[page] || page);
+    document.getElementById('windowTitle').textContent = 'Kriperovich — ' + (pageNames[page] || page);
+
+    // Счётчик посещений (Firebase + fallback localStorage)
+    if (page === 'home') {
+      const visits = await fbAddVisit();
+      document.getElementById('visitCount').textContent = visits;
+    } else {
+      const visits = await fbGetVisits();
+      document.getElementById('visitCount').textContent = visits;
+    }
+  }
+
+  // --- Часы ---
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    document.getElementById('taskbarClock').textContent = h + ':' + m;
+  }
+  updateClock();
+  setInterval(updateClock, 10000);
+
+  // --- Перетаскивание окна ---
+  let dragging = false, offsetX, offsetY;
+  const titleBar = document.getElementById('titleBar');
+  const win = document.getElementById('mainWindow');
+
+  titleBar.addEventListener('mousedown', e => {
+    dragging = true;
+    offsetX = e.clientX - win.getBoundingClientRect().left;
+    offsetY = e.clientY - win.getBoundingClientRect().top;
+    win.style.position = 'absolute';
+    win.style.margin = '0';
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    win.style.left = (e.clientX - offsetX) + 'px';
+    win.style.top = (e.clientY - offsetY) + 'px';
+    win.style.right = 'auto';
+  });
+
+  document.addEventListener('mouseup', () => { dragging = false; });
+
+  // --- Копирование в буфер ---
+  function copyToClipboard(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = '✓';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
+    }).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      btn.textContent = '✓';
+    });
+  }
+
+  // --- GitHub статистика ---
+  const GITHUB_USERS = ['Kriperovich', 'Kriperovich2', 'Kriperovich3'];
+
+  async function fetchGitHubStats() {
+    try {
+      let totalRepos = 0;
+      let totalCommits = 0;
+
+      for (const username of GITHUB_USERS) {
+        try {
+          // Репозитории
+          const userRes = await fetch('https://api.github.com/users/' + username);
+          if (userRes.ok) {
+            const data = await userRes.json();
+            totalRepos += data.public_repos || 0;
+          }
+
+          // Коммиты (поисковый API)
+          const commitRes = await fetch(
+            'https://api.github.com/search/commits?q=author:' + username + '&per_page=1',
+            { headers: { 'Accept': 'application/vnd.github+json' } }
+          );
+          if (commitRes.ok) {
+            const commitData = await commitRes.json();
+            totalCommits += commitData.total_count || 0;
+          }
+        } catch (_) { /* пропускаем если аккаунт недоступен */ }
+      }
+
+      document.getElementById('totalRepos').textContent = totalRepos;
+      document.getElementById('totalCommits').textContent = totalCommits;
+    } catch (e) {
+      document.getElementById('totalRepos').textContent = '⚠️';
+      document.getElementById('totalCommits').textContent = '⚠️';
+    }
+  }
+
+  // --- Загрузка ---
+  document.addEventListener('DOMContentLoaded', async () => {
+    // GitHub статистика
+    fetchGitHubStats();
+
+    // Начальная страница = home (там же обновится счётчик)
+    switchPage('home');
+  });
+</script>
+
+<!-- курсоровые эффекты как просили -->
+<script src="https://cdn.jsdelivr.net/npm/cursor-effects@1.0.18/dist/browser.min.js"></script>
+<script>
+  // --- Состояние эффектов ---
+  const effectsState = { emoji: true, spin: false, binary: false };
+  let emojiCursorInstance = null;
+
+  // --- Вкл/Выкл ---
+  function toggleEffect(name, on) {
+    effectsState[name] = on;
+
+    if (name === 'emoji') {
+      if (emojiCursorInstance) { emojiCursorInstance.destroy(); emojiCursorInstance = null; }
+      if (on) {
+        emojiCursorInstance = cursoreffects.springyEmojiCursor({ emoji: ['🖥️'] });
+      }
+    }
+  }
+
+  // --- Поворот всей страницы на 360 ---
+  document.addEventListener('click', function(e) {
+    if (!effectsState.spin) return;
+
+    document.body.classList.add('spin-page');
+    setTimeout(() => document.body.classList.remove('spin-page'), 800);
+  });
+
+  // --- Бинарное конфети (зелёное) ---
+  document.addEventListener('click', function(e) {
+    if (!effectsState.binary) return;
+
+    for (let i = 0; i < 20; i++) {
+      const el = document.createElement('div');
+      el.className = 'binary-particle';
+      el.textContent = Math.random() > 0.5 ? '0' : '1';
+      el.style.left = (e.clientX + (Math.random() - 0.5) * 80) + 'px';
+      el.style.top = (e.clientY - 10) + 'px';
+      el.style.fontSize = (12 + Math.random() * 12) + 'px';
+      document.body.appendChild(el);
+
+      const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.2;
+      const speed = 3 + Math.random() * 5;
+      const vx = Math.cos(angle) * speed;
+      let vy = Math.sin(angle) * speed;
+      let x = parseFloat(el.style.left);
+      let y = parseFloat(el.style.top);
+      let opacity = 1;
+
+      const frame = () => {
+        if (!el.parentNode) return;
+        vy += 0.15;
+        x += vx;
+        y += vy;
+        opacity -= 0.015;
+        if (opacity <= 0) { el.remove(); return; }
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        el.style.opacity = opacity;
+        requestAnimationFrame(frame);
+      };
+      setTimeout(() => requestAnimationFrame(frame), i * 30);
+    }
+  });
+
+  // --- Инициализация ---
+  document.addEventListener('DOMContentLoaded', () => {
+    emojiCursorInstance = cursoreffects.springyEmojiCursor({ emoji: ['🖥️'] });
+  });
+
+  // ===== ОКНО: СВЕРНУТЬ / РАЗВЕРНУТЬ / ЗАКРЫТЬ =====
+  let isMinimized = false;
+
+  function minimizeWindow() {
+    isMinimized = true;
+    document.getElementById('mainWindow').classList.add('minimized');
+    document.getElementById('taskbarMain').classList.remove('active-task');
+  }
+
+  function restoreWindow() {
+    isMinimized = false;
+    document.getElementById('mainWindow').classList.remove('minimized');
+    document.getElementById('taskbarMain').classList.add('active-task');
+  }
+
+  // Клик по таскбару — восстановить
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('taskbarMain').addEventListener('click', restoreWindow);
+  });
+
+  // ===== ПЕЙНТ =====
+  let paintOpen = false;
+  let paintMinimized = false;
+  let paintColor = '#000000';
+  let paintTool = 'pencil';
+  let isDrawing = false;
+  let paintCtx = null;
+
+  function openPaint() {
+    if (paintOpen) { restorePaint(); return; }
+    paintOpen = true;
+    paintMinimized = false;
+    const pw = document.getElementById('paintWindow');
+    pw.classList.add('open');
+    pw.classList.remove('minimized');
+    // Показываем таскбар
+    document.getElementById('taskbarPaint').style.display = 'block';
+    document.getElementById('taskbarPaint').classList.add('active-task');
+    initPaintCanvas();
+  }
+
+  function closePaint() {
+    paintOpen = false;
+    document.getElementById('paintWindow').classList.remove('open');
+    document.getElementById('taskbarPaint').style.display = 'none';
+  }
+
+  function minimizePaint() {
+    paintMinimized = true;
+    document.getElementById('paintWindow').classList.add('minimized');
+    document.getElementById('taskbarPaint').classList.remove('active-task');
+  }
+
+  function restorePaint() {
+    if (!paintOpen) return;
+    paintMinimized = false;
+    document.getElementById('paintWindow').classList.remove('minimized');
+    document.getElementById('taskbarPaint').classList.add('active-task');
+  }
+
+  // Клик по таскбару пейнта
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('taskbarPaint').addEventListener('click', () => {
+      if (paintMinimized) restorePaint();
+      else if (paintOpen) minimizePaint();
+    });
+  });
+
+  function pickColor(btn) {
+    document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    paintColor = btn.dataset.color;
+  }
+
+  function setPaintTool(tool) {
+    paintTool = tool;
+    document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active-tool'));
+    document.getElementById(tool === 'pencil' ? 'toolPencil' : 'toolEraser').classList.add('active-tool');
+  }
+
+  function initPaintCanvas() {
+    const canvas = document.getElementById('paintCanvas');
+    if (paintCtx) return;
+    paintCtx = canvas.getContext('2d');
+    paintCtx.fillStyle = '#ffffff';
+    paintCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+    let lastX, lastY;
+
+    function startDraw(e) {
+      isDrawing = true;
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const x = (e.clientX - rect.left) * scaleX;
+      const y = (e.clientY - rect.top) * scaleY;
+      lastX = x; lastY = y;
+      // single dot
+      paintCtx.fillStyle = paintTool === 'eraser' ? '#ffffff' : paintColor;
+      paintCtx.beginPath();
+      paintCtx.arc(x, y, paintTool === 'eraser' ? 10 : 2, 0, Math.PI * 2);
+      paintCtx.fill();
+    }
+
+    function draw(e) {
+      if (!isDrawing) return;
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const x = (e.clientX - rect.left) * scaleX;
+      const y = (e.clientY - rect.top) * scaleY;
+
+      paintCtx.beginPath();
+      paintCtx.moveTo(lastX, lastY);
+      paintCtx.lineTo(x, y);
+      paintCtx.strokeStyle = paintTool === 'eraser' ? '#ffffff' : paintColor;
+      paintCtx.lineWidth = paintTool === 'eraser' ? 20 : 4;
+      paintCtx.lineCap = 'round';
+      paintCtx.lineJoin = 'round';
+      paintCtx.stroke();
+
+      lastX = x; lastY = y;
+    }
+
+    function stopDraw() { isDrawing = false; }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('mouseleave', stopDraw);
+  }
+
+  function clearPaint() {
+    if (!paintCtx) return;
+    const canvas = document.getElementById('paintCanvas');
+    paintCtx.fillStyle = '#ffffff';
+    paintCtx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  // Таскание Пейнта
+  document.addEventListener('DOMContentLoaded', () => {
+    const bar = document.getElementById('paintTitleBar');
+    const pw = document.getElementById('paintWindow');
+    let dragging = false, ox, oy;
+    bar.addEventListener('mousedown', e => {
+      dragging = true; ox = e.clientX - pw.offsetLeft; oy = e.clientY - pw.offsetTop;
+      pw.style.position = 'absolute';
+    });
+    document.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      pw.style.left = (e.clientX - ox) + 'px';
+      pw.style.top = (e.clientY - oy) + 'px';
+    });
+    document.addEventListener('mouseup', () => { dragging = false; });
+  });
+
+  // ===== PIXELS =====
+  const PIXELS_SIZE = 128;
+  let pixelsOpen = false, pixelsMinimized = false;
+  let pixelsZoom = 4;
+  let pixelsColor = '#000000';
+  let pixelsData = null;
+  let pixelsCtx = null;
+  let panX = 0, panY = 0;
+  let isPanning = false, panStartX, panStartY, panStartPanX, panStartPanY;
+
+  async function openPixels() {
+    if (pixelsOpen) { restorePixels(); return; }
+    pixelsOpen = true; pixelsMinimized = false;
+    panX = 0; panY = 0;
+    document.getElementById('pixelsWindow').classList.add('open');
+    document.getElementById('pixelsWindow').classList.remove('minimized');
+    document.getElementById('taskbarPixels').style.display = 'block';
+    document.getElementById('taskbarPixels').classList.add('active-task');
+    await initPixels();
+  }
+
+  function closePixels() {
+    pixelsOpen = false;
+    document.getElementById('pixelsWindow').classList.remove('open');
+    document.getElementById('taskbarPixels').style.display = 'none';
+  }
+
+  function minimizePixels() {
+    pixelsMinimized = true;
+    document.getElementById('pixelsWindow').classList.add('minimized');
+    document.getElementById('taskbarPixels').classList.remove('active-task');
+  }
+
+  function restorePixels() {
+    if (!pixelsOpen) return;
+    pixelsMinimized = false;
+    document.getElementById('pixelsWindow').classList.remove('minimized');
+    document.getElementById('taskbarPixels').classList.add('active-task');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('taskbarPixels').addEventListener('click', () => {
+      if (pixelsMinimized) restorePixels();
+      else if (pixelsOpen) minimizePixels();
+    });
+  });
+
+  async function initPixels() {
+    const saved = await fbLoadPixels();
+    if (saved) {
+      pixelsData = saved;
+    } else {
+      pixelsData = [];
+      for (let y = 0; y < PIXELS_SIZE; y++) {
+        pixelsData[y] = [];
+        for (let x = 0; x < PIXELS_SIZE; x++) {
+          pixelsData[y][x] = '#ffffff';
+        }
+      }
+    }
+    document.getElementById('pixelsCooldown').textContent = '🔥 Cloud sync';
+    renderPixels();
+  }
+
+  function renderPixels() {
+    const canvas = document.getElementById('pixelsCanvas');
+    if (!pixelsCtx) pixelsCtx = canvas.getContext('2d');
+    const ctx = pixelsCtx;
+    const displaySize = PIXELS_SIZE * pixelsZoom;
+    canvas.width = displaySize;
+    canvas.height = displaySize;
+
+    for (let y = 0; y < PIXELS_SIZE; y++) {
+      for (let x = 0; x < PIXELS_SIZE; x++) {
+        ctx.fillStyle = pixelsData[y][x];
+        ctx.fillRect(x * pixelsZoom, y * pixelsZoom, pixelsZoom, pixelsZoom);
+      }
+    }
+
+    if (pixelsZoom >= 4) {
+      ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+      ctx.lineWidth = 0.5;
+      for (let i = 0; i <= PIXELS_SIZE; i++) {
+        ctx.beginPath(); ctx.moveTo(i * pixelsZoom, 0); ctx.lineTo(i * pixelsZoom, displaySize); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, i * pixelsZoom); ctx.lineTo(displaySize, i * pixelsZoom); ctx.stroke();
+      }
+    }
+
+    // Применяем панарамие через CSS transform
+    canvas.style.transform = 'translate(' + panX + 'px, ' + panY + 'px)';
+
+    document.getElementById('pixelsZoomLevel').textContent = '×' + pixelsZoom;
+  }
+
+  function pixelsZoomIn() {
+    if (pixelsZoom < 16) { pixelsZoom *= 2; renderPixels(); }
+  }
+
+  function pixelsZoomOut() {
+    if (pixelsZoom > 1) { pixelsZoom /= 2; renderPixels(); }
+  }
+
+  function pixelsPickColor(btn) {
+    document.querySelectorAll('#pixelsWindow .color-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    pixelsColor = btn.dataset.color;
+  }
+
+  async function pixelsPlace(e) {
+    if (e.button !== 0 || isPanning) return;
+    const canvas = document.getElementById('pixelsCanvas');
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / canvas.offsetWidth;
+    const scaleY = canvas.height / canvas.offsetHeight;
+    const gx = Math.floor((e.clientX - rect.left) * scaleX / pixelsZoom);
+    const gy = Math.floor((e.clientY - rect.top) * scaleY / pixelsZoom);
+
+    if (gx < 0 || gx >= PIXELS_SIZE || gy < 0 || gy >= PIXELS_SIZE) return;
+
+    const last = parseInt(localStorage.getItem('kriperovich_pixels_last')) || 0;
+    const now = Date.now();
+    const cooldown = 30 * 1000;
+    const remaining = cooldown - (now - last);
+
+    if (remaining > 0) {
+      const sec = Math.ceil(remaining / 1000);
+      document.getElementById('pixelsCooldown').textContent = '⏳ ' + sec + 'с';
+      return;
+    }
+
+    pixelsData[gy][gx] = pixelsColor;
+    try {
+      await Promise.all([
+        fbSavePixels(pixelsData),
+        Promise.resolve(localStorage.setItem('kriperovich_pixels_last', String(now)))
+      ]);
+    } catch (_) {
+      localStorage.setItem('kriperovich_pixels', JSON.stringify(pixelsData));
+      localStorage.setItem('kriperovich_pixels_last', String(now));
+    }
+    document.getElementById('pixelsCooldown').textContent = '✅ Поставлено! Следующий через 30 сек';
+    renderPixels();
+  }
+
+  // --- Зум колёсиком + панарамие средней кнопкой ---
+  document.addEventListener('DOMContentLoaded', () => {
+    const wrap = document.getElementById('pixelsCanvasWrap');
+    const canvas = document.getElementById('pixelsCanvas');
+
+    // Зум колёсиком (как в Aseprite)
+    wrap.addEventListener('wheel', e => {
+      e.preventDefault();
+      const rect = wrap.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+
+      // Координаты на холсте до зума
+      const hx = (mx - panX) / pixelsZoom;
+      const hy = (my - panY) / pixelsZoom;
+
+      if (e.deltaY < 0) {
+        if (pixelsZoom < 16) pixelsZoom *= 2;
+      } else {
+        if (pixelsZoom > 1) pixelsZoom /= 2;
+      }
+
+      // Координаты на холсте после зума
+      renderPixels();
+      panX = mx - hx * pixelsZoom;
+      panY = my - hy * pixelsZoom;
+      canvas.style.transform = 'translate(' + panX + 'px, ' + panY + 'px)';
+    }, { passive: false });
+
+    // Панарамие средней кнопкой (колёсико)
+    canvas.addEventListener('mousedown', e => {
+      if (e.button === 1) { // средняя кнопка
+        e.preventDefault();
+        isPanning = true;
+        wrap.classList.add('panning');
+        panStartX = e.clientX;
+        panStartY = e.clientY;
+        panStartPanX = panX;
+        panStartPanY = panY;
+      }
+    });
+
+    document.addEventListener('mousemove', e => {
+      if (!isPanning) return;
+      panX = panStartPanX + (e.clientX - panStartX);
+      panY = panStartPanY + (e.clientY - panStartY);
+      const canvas = document.getElementById('pixelsCanvas');
+      canvas.style.transform = 'translate(' + panX + 'px, ' + panY + 'px)';
+    });
+
+    document.addEventListener('mouseup', e => {
+      if (e.button === 1 && isPanning) {
+        isPanning = false;
+        wrap.classList.remove('panning');
+      }
+    });
+
+    // Предотвращаем контекстное меню на средней кнопке
+    wrap.addEventListener('contextmenu', e => e.preventDefault());
+
+    // Клик для ставки пикселя
+    canvas.addEventListener('click', pixelsPlace);
+  });
+
+  // Обновление кулдауна каждую секунду
+  setInterval(() => {
+    const last = parseInt(localStorage.getItem('kriperovich_pixels_last')) || 0;
+    const now = Date.now();
+    const cooldown = 30 * 1000;
+    const remaining = cooldown - (now - last);
+    const el = document.getElementById('pixelsCooldown');
+    if (remaining <= 0) {
+      el.textContent = '✅ Готово';
+    } else if (!pixelsOpen) {
+      // не обновляем если закрыто
+    } else {
+      const sec = Math.ceil(remaining / 1000);
+      el.textContent = '⏳ ' + sec + 'с';
+    }
+  }, 1000);
+
+  // Таскание Pixels (за заголовок)
+  document.addEventListener('DOMContentLoaded', () => {
+    const bar = document.getElementById('pixelsTitleBar');
+    const pw = document.getElementById('pixelsWindow');
+    let dragging = false, ox, oy;
+    bar.addEventListener('mousedown', e => {
+      dragging = true; ox = e.clientX - pw.offsetLeft; oy = e.clientY - pw.offsetTop;
+      pw.style.position = 'absolute';
+    });
+    document.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      pw.style.left = (e.clientX - ox) + 'px';
+      pw.style.top = (e.clientY - oy) + 'px';
+    });
+    document.addEventListener('mouseup', () => { dragging = false; });
+  });
+</script>
+</body>
+</html>
