@@ -498,10 +498,6 @@
       <div class="icon-placeholder">💬</div>
       Сос сети
     </div>
-    <div class="desktop-icon" onclick="switchPage('contacts')">
-      <div class="icon-placeholder">✉️</div>
-      Контакты
-    </div>
     <div class="desktop-icon" onclick="openPaint()">
       <div class="icon-placeholder">🎨</div>
       Paint
@@ -538,7 +534,6 @@
       <button class="active-tab" data-page="home" onclick="switchPage('home')">🏠 Главная</button>
       <button data-page="github" onclick="switchPage('github')">🐙 Гитахбы</button>
       <button data-page="social" onclick="switchPage('social')">💬 Сос сети</button>
-      <button data-page="contacts" onclick="switchPage('contacts')">✉️ Контакты</button>
     </div>
 
     <!-- Тело окна -->
@@ -593,11 +588,6 @@
             <a class="link-98" href="https://steamcommunity.com/id/connor_kriperovich/" target="_blank">🎮 Steam /connor_kriperovich</a>
           </div>
         </div>
-      </div>
-
-      <!-- ========== КОНТАКТЫ ========== -->
-      <div class="page" id="page-contacts">
-        <h2>✉️ Контакты</h2>
         <div class="group-box">
           <legend>📞 Контакты</legend>
           <p>✈️ Telegram: <strong>@cat7p</strong> <button class="copy-btn" onclick="copyToClipboard('@cat7p', this)">📋</button></p>
@@ -606,6 +596,7 @@
           <p style="padding-left:24px;">✉️ <strong>stiv.kovich@bl.ru</strong> <button class="copy-btn" onclick="copyToClipboard('stiv.kovich@bl.ru', this)">📋</button></p>
         </div>
       </div>
+
 
     </div><!-- /window-body -->
 
@@ -872,9 +863,8 @@
     home: 'Главная',
     github: 'Гитахбы',
     social: 'Сос сети',
-    contacts: 'Контакты',
   };
-  const pageIcons = { home: '🏠', github: '🐙', social: '💬', contacts: '✉️' };
+  const pageIcons = { home: '🏠', github: '🐙', social: '💬' };
 
   async function switchPage(page) {
     // Скрываем все страницы
