@@ -990,6 +990,8 @@
   document.addEventListener('DOMContentLoaded', async () => {
     // GitHub статистика
     fetchGitHubStats();
+    // Загружаем список мемов
+    loadMemsList();
 
     // Начальная страница = home (там же обновится счётчик)
     switchPage('home');
@@ -1447,26 +1449,14 @@
   }, 1000);
 
   // ===== МЕМЫ =====
-  const memsList = [
-    'Screenshot_3.png',
-    '13513413513513.png',
-    '135555551.png',
-    '2.png',
-    '213412312.png',
-    '23232.png',
-    '3523623623.png',
-    '58510838р91п.png',
-    'ChatGPT_Image_14_._2026_._02_40_33.png',
-    'IMG_20260629_013728_677.png',
-    'attachment.png',
-    'e5cb53511e8f359f25363bb2a2f8de40.png',
-    'image (1).png',
-    'image (2).png'
-  ]; // сюда я буду добавлять имена файлов
+  let memsList = [];
 
-  // Функция для добавления мемов (вызываю её я, когда ты кидаешь файлы в папку mems/)
-  function addMems(...filenames) {
-    filenames.forEach(f => { if (!memsList.includes(f)) memsList.push(f); });
+  // Загружаем список мемов из index.json
+  async function loadMemsList() {
+    try {
+      const r = await fetch('mems/index.json?_=' + Date.now());
+      if (r.ok) memsList = await r.json();
+    } catch (_) {}
     if (memsOpen) renderMems();
   }
   let memsOpen = false, memsMinimized = false;
@@ -1479,6 +1469,7 @@
     document.getElementById('memsWindow').classList.remove('minimized');
     document.getElementById('taskbarMems').style.display = 'block';
     document.getElementById('taskbarMems').classList.add('active-task');
+    if (memsList.length === 0) loadMemsList();
     renderMems();
   }
 
