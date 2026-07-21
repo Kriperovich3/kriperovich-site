@@ -514,6 +514,10 @@
       <div class="icon-placeholder">😂</div>
       Мемы
     </div>
+    <div class="desktop-icon" onclick="openEffects()">
+      <div class="icon-placeholder">✨</div>
+      Эффекты
+    </div>
   </div>
 
   <!-- ===== ГЛАВНОЕ ОКНО ===== -->
@@ -534,7 +538,6 @@
       <button class="active-tab" data-page="home" onclick="switchPage('home')">🏠 Главная</button>
       <button data-page="github" onclick="switchPage('github')">🐙 Гитахбы</button>
       <button data-page="social" onclick="switchPage('social')">💬 Сос сети</button>
-      <button data-page="effects" onclick="switchPage('effects')">✨ Эффекты</button>
       <button data-page="contacts" onclick="switchPage('contacts')">✉️ Контакты</button>
     </div>
 
@@ -589,41 +592,6 @@
             <a class="link-98" href="https://www.youtube.com/@just_kriperovich" target="_blank">▶️ YouTube /just_kriperovich</a>
           </div>
         </div>
-      </div>
-
-      <!-- ========== ЭФФЕКТЫ ========== -->
-      <div class="page" id="page-effects">
-        <h2>✨ Эффекты</h2>
-        <p>Включай и выключай визуальные плюшки (работают на весь сайт):</p>
-        <div class="group-box">
-          <legend>⚙️ Настройки</legend>
-
-          <div class="toggle-row">
-            <div class="toggle-wrap">
-              <input type="checkbox" id="chkEmoji" checked onchange="toggleEffect('emoji', this.checked)">
-              <label for="chkEmoji">🖥️ Эмодзи за курсором</label>
-            </div>
-            <span class="desc">Пружинящая цепочка из компьютерных эмодзи</span>
-          </div>
-
-          <div class="toggle-row">
-            <div class="toggle-wrap">
-              <input type="checkbox" id="chkSpin" onchange="toggleEffect('spin', this.checked)">
-              <label for="chkSpin">🌀 Поворот на 360° при клике</label>
-            </div>
-            <span class="desc">Вся страница делает полный оборот при клике</span>
-          </div>
-
-          <div class="toggle-row">
-            <div class="toggle-wrap">
-              <input type="checkbox" id="chkBinary" onchange="toggleEffect('binary', this.checked)">
-              <label for="chkBinary">💚 Конфети из 0 и 1 при клике</label>
-            </div>
-            <span class="desc">Зелёные 0 и 1 сыплются при каждом клике (матрица-стайл)</span>
-          </div>
-
-        </div>
-        <p style="font-size:11px;color:#808080;text-align:center;">💡 Эффекты работают прямо сейчас — переключи и проверь на любой странице</p>
       </div>
 
       <!-- ========== КОНТАКТЫ ========== -->
@@ -756,6 +724,54 @@
   </div>
 </div>
 
+<!-- ===== ЭФФЕКТЫ (отдельное окно) ===== -->
+<div class="mems-window" id="effectsWindow" style="top:100px;left:200px;width:480px;">
+  <div class="title-bar" id="effectsTitleBar">
+    <span class="title-icon">✨</span>
+    <span class="title-text">Эффекты — Управление</span>
+    <span class="title-buttons">
+      <button onclick="minimizeEffects()">_</button>
+      <button onclick="restoreEffects()">□</button>
+      <button onclick="closeEffects()">✕</button>
+    </span>
+  </div>
+  <div class="mems-toolbar">
+    <span style="font-size:11px;font-weight:bold;">✨ Визуальные эффекты</span>
+  </div>
+  <div class="window-body" style="min-height:180px;padding:12px;">
+    <p style="font-size:12px;margin-bottom:8px;">Включай и выключай плюшки (работают на весь сайт):</p>
+    <div class="group-box">
+      <legend>⚙️ Настройки</legend>
+
+      <div class="toggle-row">
+        <div class="toggle-wrap">
+          <input type="checkbox" id="chkEmoji" checked onchange="toggleEffect('emoji', this.checked)">
+          <label for="chkEmoji">🖥️ Эмодзи за курсором</label>
+        </div>
+        <span class="desc">Пружинящая цепочка из компьютерных эмодзи</span>
+      </div>
+
+      <div class="toggle-row">
+        <div class="toggle-wrap">
+          <input type="checkbox" id="chkSpin" onchange="toggleEffect('spin', this.checked)">
+          <label for="chkSpin">🌀 Поворот на 360° при клике</label>
+        </div>
+        <span class="desc">Вся страница делает полный оборот при клике</span>
+      </div>
+
+      <div class="toggle-row">
+        <div class="toggle-wrap">
+          <input type="checkbox" id="chkBinary" onchange="toggleEffect('binary', this.checked)">
+          <label for="chkBinary">💚 Конфети из 0 и 1 при клике</label>
+        </div>
+        <span class="desc">Зелёные 0 и 1 сыплются при каждом клике (матрица-стайл)</span>
+      </div>
+
+    </div>
+    <p style="font-size:11px;color:#808080;text-align:center;margin-top:8px;">💡 Работают прямо сейчас — переключи и проверь</p>
+  </div>
+</div>
+
 <!-- ===== ПАНЕЛЬ ЗАДАЧ ===== -->
 <div class="taskbar">
   <button class="start-btn" onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')">
@@ -767,6 +783,7 @@
     <div class="taskbar-item" id="taskbarPaint" style="display:none;">🎨 Paint</div>
     <div class="taskbar-item" id="taskbarPixels" style="display:none;">🎯 Pixels</div>
     <div class="taskbar-item" id="taskbarMems" style="display:none;">😂 Мемы</div>
+    <div class="taskbar-item" id="taskbarEffects" style="display:none;">✨ Эффекты</div>
   </div>
   <div class="taskbar-time" id="taskbarClock">12:00</div>
 </div>
@@ -854,10 +871,9 @@
     home: 'Главная',
     github: 'Гитахбы',
     social: 'Сос сети',
-    effects: 'Эффекты',
     contacts: 'Контакты',
   };
-  const pageIcons = { home: '🏠', github: '🐙', social: '💬', effects: '✨', contacts: '✉️' };
+  const pageIcons = { home: '🏠', github: '🐙', social: '💬', contacts: '✉️' };
 
   async function switchPage(page) {
     // Скрываем все страницы
@@ -1546,6 +1562,62 @@
     if (e.key === 'Escape') closeMemsModal();
     if (e.key === 'ArrowLeft' && document.getElementById('memsModal').classList.contains('open')) memsNav(-1);
     if (e.key === 'ArrowRight' && document.getElementById('memsModal').classList.contains('open')) memsNav(1);
+  });
+
+  // ===== ЭФФЕКТЫ (отдельное окно) =====
+  let effectsOpen = false, effectsMinimized = false;
+
+  function openEffects() {
+    if (effectsOpen) { restoreEffects(); return; }
+    effectsOpen = true; effectsMinimized = false;
+    const w = document.getElementById('effectsWindow');
+    w.classList.add('open');
+    w.classList.remove('minimized');
+    document.getElementById('taskbarEffects').style.display = 'block';
+    document.getElementById('taskbarEffects').classList.add('active-task');
+  }
+
+  function closeEffects() {
+    effectsOpen = false;
+    document.getElementById('effectsWindow').classList.remove('open');
+    document.getElementById('taskbarEffects').style.display = 'none';
+  }
+
+  function minimizeEffects() {
+    effectsMinimized = true;
+    document.getElementById('effectsWindow').classList.add('minimized');
+    document.getElementById('taskbarEffects').classList.remove('active-task');
+  }
+
+  function restoreEffects() {
+    if (!effectsOpen) return;
+    effectsMinimized = false;
+    document.getElementById('effectsWindow').classList.remove('minimized');
+    document.getElementById('taskbarEffects').classList.add('active-task');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('taskbarEffects').addEventListener('click', () => {
+      if (effectsMinimized) restoreEffects();
+      else if (effectsOpen) minimizeEffects();
+    });
+  });
+
+  // Таскание Эффектов (за заголовок)
+  document.addEventListener('DOMContentLoaded', () => {
+    const bar = document.getElementById('effectsTitleBar');
+    const w = document.getElementById('effectsWindow');
+    let dragging = false, ox, oy;
+    bar.addEventListener('mousedown', e => {
+      dragging = true; ox = e.clientX - w.offsetLeft; oy = e.clientY - w.offsetTop;
+      w.style.position = 'absolute';
+    });
+    document.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      w.style.left = (e.clientX - ox) + 'px';
+      w.style.top = (e.clientY - oy) + 'px';
+    });
+    document.addEventListener('mouseup', () => { dragging = false; });
   });
 
   // Таскание Mems (за заголовок)
