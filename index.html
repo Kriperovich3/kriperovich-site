@@ -373,6 +373,104 @@
   }
   hr { border: none; border-top: 1px solid #808080; margin: 12px 0; }
 
+  /* ===== МЕМЫ ===== */
+  .mems-window {
+    position: absolute; width: 640px; max-width: 92vw; z-index: 100;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #dfdfdf #404040 #404040 #dfdfdf;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
+    display: none; flex-direction: column;
+    top: 80px; left: 160px;
+  }
+  .mems-window.open { display: flex; }
+  .mems-window.minimized { display: none !important; }
+  .mems-gallery {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px; padding: 8px; overflow-y: auto; min-height: 200px; max-height: 380px;
+  }
+  .mems-gallery .mems-item {
+    border: 2px solid; border-color: #fff #808080 #808080 #fff;
+    background: #d4d0c8; padding: 4px; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .mems-gallery .mems-item:active { border-color: #808080 #fff #fff #808080; }
+  .mems-gallery .mems-item img {
+    width: 100%; aspect-ratio: 1; object-fit: cover;
+    border: 1px inset #808080; background: #fff;
+  }
+  .mems-gallery .mems-item span {
+    font-size: 10px; margin-top: 3px; text-align: center;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;
+  }
+  .mems-toolbar {
+    display: flex; align-items: center; gap: 4px; padding: 4px 8px;
+    border-bottom: 1px solid #808080; flex-wrap: wrap;
+  }
+  .mems-count {
+    font-size: 11px; color: #808080; margin-left: auto;
+  }
+  .mems-empty {
+    text-align: center; padding: 40px; color: #808080; font-size: 13px;
+  }
+
+  /* ===== МЕМЫ — МОДАЛКА ===== */
+  .mems-modal {
+    display: none; position: fixed; z-index: 9999;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.8);
+    align-items: center; justify-content: center;
+  }
+  .mems-modal.open { display: flex; }
+  .mems-modal-content {
+    position: relative; max-width: 85vw; max-height: 85vh;
+    background: #c0c0c0;
+    border: 2px solid; border-color: #dfdfdf #404040 #404040 #dfdfdf;
+    box-shadow: 8px 8px 0 rgba(0,0,0,0.5);
+    display: flex; flex-direction: column;
+  }
+  .mems-modal-title {
+    display: flex; align-items: center;
+    background: linear-gradient(90deg, #000080, #1084d0);
+    color: #fff; font-weight: bold; font-size: 13px;
+    padding: 3px 6px;
+  }
+  .mems-modal-title span { flex: 1; }
+  .mems-modal-title button {
+    width: 20px; height: 20px; padding: 0; font-size: 11px;
+    background: #c0c0c0; border: 2px solid; cursor: pointer;
+    border-color: #fff #808080 #808080 #fff; font-weight: bold;
+  }
+  .mems-modal-title button:active { border-color: #808080 #fff #fff #808080; }
+  .mems-modal-body {
+    display: flex; align-items: center; justify-content: center;
+    padding: 8px; overflow: hidden; position: relative;
+  }
+  .mems-modal-body img {
+    max-width: 70vw; max-height: 60vh; object-fit: contain;
+    border: 2px inset #808080; background: #fff;
+  }
+  .mems-modal-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    font-size: 28px; font-weight: bold; cursor: pointer;
+    background: #c0c0c0; border: 2px solid;
+    border-color: #fff #808080 #808080 #fff;
+    width: 36px; height: 48px; display: flex; align-items: center; justify-content: center;
+    user-select: none;
+  }
+  .mems-modal-nav:active { border-color: #808080 #fff #fff #808080; }
+  .mems-modal-nav.prev { left: -16px; }
+  .mems-modal-nav.next { right: -16px; }
+  .mems-modal-footer {
+    display: flex; gap: 4px; padding: 4px 8px;
+    border-top: 1px solid #808080;
+  }
+  .mems-modal-footer button {
+    padding: 2px 12px; font-size: 12px; font-family: 'Courier New', monospace;
+    background: #c0c0c0; border: 2px solid;
+    border-color: #fff #808080 #808080 #fff; cursor: pointer;
+  }
+  .mems-modal-footer button:active { border-color: #808080 #fff #fff #808080; }
+
   /* адаптивность */
   @media (max-width: 640px) {
     .window { width: 100%; max-height: 90vh; }
@@ -411,6 +509,10 @@
     <div class="desktop-icon" onclick="openPixels()">
       <div class="icon-placeholder">🎯</div>
       Pixels
+    </div>
+    <div class="desktop-icon" onclick="openMems()">
+      <div class="icon-placeholder">😂</div>
+      Мемы
     </div>
   </div>
 
@@ -613,6 +715,47 @@
   </div>
 </div>
 
+<!-- ===== МЕМЫ ===== -->
+<div class="mems-window" id="memsWindow">
+  <div class="title-bar" id="memsTitleBar">
+    <span class="title-icon">😂</span>
+    <span class="title-text">Мемы — Галерея</span>
+    <span class="title-buttons">
+      <button onclick="minimizeMems()">_</button>
+      <button onclick="restoreMems()">□</button>
+      <button onclick="closeMems()">✕</button>
+    </span>
+  </div>
+  <div class="mems-toolbar">
+    <span style="font-size:11px;font-weight:bold;">😂 Мемотека</span>
+    <span class="mems-count" id="memsCount">0 мемов</span>
+  </div>
+  <div class="window-body" style="min-height:200px;padding:8px;">
+    <div class="mems-gallery" id="memsGallery">
+      <div class="mems-empty">📂 Папка с мемами пуста.<br>Кидай мемы в папку <strong>mems/</strong> и скажи мне добавить их!</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== МЕМЫ — МОДАЛКА ===== -->
+<div class="mems-modal" id="memsModal">
+  <div class="mems-modal-content">
+    <div class="mems-modal-title">
+      <span id="memsModalTitle">Мем</span>
+      <button onclick="closeMemsModal()">✕</button>
+    </div>
+    <div class="mems-modal-body">
+      <div class="mems-modal-nav prev" onclick="memsNav(-1)">◀</div>
+      <img id="memsModalImg" src="" alt="мем">
+      <div class="mems-modal-nav next" onclick="memsNav(1)">▶</div>
+    </div>
+    <div class="mems-modal-footer">
+      <button onclick="memsDownload()">💾 Скачать</button>
+      <button style="margin-left:auto;" onclick="closeMemsModal()">✕ Закрыть</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== ПАНЕЛЬ ЗАДАЧ ===== -->
 <div class="taskbar">
   <button class="start-btn" onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')">
@@ -623,6 +766,7 @@
     <div class="taskbar-item active-task" id="taskbarMain">📄 Kriperovich — Портфолио</div>
     <div class="taskbar-item" id="taskbarPaint" style="display:none;">🎨 Paint</div>
     <div class="taskbar-item" id="taskbarPixels" style="display:none;">🎯 Pixels</div>
+    <div class="taskbar-item" id="taskbarMems" style="display:none;">😂 Мемы</div>
   </div>
   <div class="taskbar-time" id="taskbarClock">12:00</div>
 </div>
@@ -1284,6 +1428,127 @@
       el.textContent = '⏳ ' + sec + 'с';
     }
   }, 1000);
+
+  // ===== МЕМЫ =====
+  const memsList = []; // сюда я буду добавлять имена файлов
+
+  // Функция для добавления мемов (вызываю её я, когда ты кидаешь файлы в папку mems/)
+  function addMems(...filenames) {
+    filenames.forEach(f => { if (!memsList.includes(f)) memsList.push(f); });
+    if (memsOpen) renderMems();
+  }
+  let memsOpen = false, memsMinimized = false;
+  let memsCurrentIndex = -1;
+
+  function openMems() {
+    if (memsOpen) { restoreMems(); return; }
+    memsOpen = true; memsMinimized = false;
+    document.getElementById('memsWindow').classList.add('open');
+    document.getElementById('memsWindow').classList.remove('minimized');
+    document.getElementById('taskbarMems').style.display = 'block';
+    document.getElementById('taskbarMems').classList.add('active-task');
+    renderMems();
+  }
+
+  function closeMems() {
+    memsOpen = false;
+    document.getElementById('memsWindow').classList.remove('open');
+    document.getElementById('taskbarMems').style.display = 'none';
+    closeMemsModal();
+  }
+
+  function minimizeMems() {
+    memsMinimized = true;
+    document.getElementById('memsWindow').classList.add('minimized');
+    document.getElementById('taskbarMems').classList.remove('active-task');
+  }
+
+  function restoreMems() {
+    if (!memsOpen) return;
+    memsMinimized = false;
+    document.getElementById('memsWindow').classList.remove('minimized');
+    document.getElementById('taskbarMems').classList.add('active-task');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('taskbarMems').addEventListener('click', () => {
+      if (memsMinimized) restoreMems();
+      else if (memsOpen) minimizeMems();
+    });
+  });
+
+  function renderMems() {
+    const gallery = document.getElementById('memsGallery');
+    const count = document.getElementById('memsCount');
+    count.textContent = memsList.length + ' мемов';
+
+    if (memsList.length === 0) {
+      gallery.innerHTML = '<div class="mems-empty">📂 Папка с мемами пуста.<br>Кидай мемы в папку <strong>mems/</strong> и скажи мне добавить их!</div>';
+      return;
+    }
+
+    gallery.innerHTML = memsList.map((name, i) => {
+      const display = name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
+      return '<div class="mems-item" onclick="openMemsModal(' + i + ')">' +
+        '<img src="mems/' + name + '" alt="' + display + '" loading="lazy">' +
+        '<span>' + display + '</span></div>';
+    }).join('');
+  }
+
+  function openMemsModal(index) {
+    memsCurrentIndex = index;
+    const name = memsList[index];
+    const display = name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
+    document.getElementById('memsModalTitle').textContent = '😂 ' + display;
+    document.getElementById('memsModalImg').src = 'mems/' + name;
+    document.getElementById('memsModal').classList.add('open');
+  }
+
+  function closeMemsModal() {
+    document.getElementById('memsModal').classList.remove('open');
+    memsCurrentIndex = -1;
+  }
+
+  function memsNav(dir) {
+    if (memsList.length === 0) return;
+    const newIdx = (memsCurrentIndex + dir + memsList.length) % memsList.length;
+    openMemsModal(newIdx);
+  }
+
+  function memsDownload() {
+    if (memsCurrentIndex < 0 || memsCurrentIndex >= memsList.length) return;
+    const name = memsList[memsCurrentIndex];
+    const a = document.createElement('a');
+    a.href = 'mems/' + name;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  // Закрытие модалки по Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeMemsModal();
+    if (e.key === 'ArrowLeft' && document.getElementById('memsModal').classList.contains('open')) memsNav(-1);
+    if (e.key === 'ArrowRight' && document.getElementById('memsModal').classList.contains('open')) memsNav(1);
+  });
+
+  // Таскание Mems (за заголовок)
+  document.addEventListener('DOMContentLoaded', () => {
+    const bar = document.getElementById('memsTitleBar');
+    const w = document.getElementById('memsWindow');
+    let dragging = false, ox, oy;
+    bar.addEventListener('mousedown', e => {
+      dragging = true; ox = e.clientX - w.offsetLeft; oy = e.clientY - w.offsetTop;
+      w.style.position = 'absolute';
+    });
+    document.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      w.style.left = (e.clientX - ox) + 'px';
+      w.style.top = (e.clientY - oy) + 'px';
+    });
+    document.addEventListener('mouseup', () => { dragging = false; });
+  });
 
   // Таскание Pixels (за заголовок)
   document.addEventListener('DOMContentLoaded', () => {
