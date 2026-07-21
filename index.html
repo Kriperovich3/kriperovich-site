@@ -490,6 +490,10 @@
       <div class="icon-placeholder">🏠</div>
       Мои проекты
     </div>
+    <div class="desktop-icon" onclick="switchPage('about')">
+      <div class="icon-placeholder">👤</div>
+      Обо мне
+    </div>
     <div class="desktop-icon" onclick="switchPage('github')">
       <div class="icon-placeholder">🐙</div>
       GitHubs
@@ -532,6 +536,7 @@
     <!-- Вкладки (меню) -->
     <div class="menu-bar">
       <button class="active-tab" data-page="home" onclick="switchPage('home')">🏠 Главная</button>
+      <button data-page="about" onclick="switchPage('about')">👤 Обо мне</button>
       <button data-page="github" onclick="switchPage('github')">🐙 Гитахбы</button>
       <button data-page="social" onclick="switchPage('social')">💬 Сос сети</button>
     </div>
@@ -563,7 +568,21 @@
         </p>
       </div>
 
-      <!-- ========== ГИТХАБЫ ========== -->
+      <!-- ========== ОБО МНЕ ========== -->
+      <div class="page" id="page-about">
+        <h2>👤 Обо мне</h2>
+        <div style="display:flex;gap:16px;align-items:flex-start;">
+          <div style="flex:1;">
+            <div class="group-box">
+              <legend>📖 Биография</legend>
+              <p>Знаешь, как биография писателя в учебниках литературы — тут примерно так же, только вместо книг — код. 😄</p>
+              <p>Привет! Я <strong>Kriperovich</strong>. Занимаюсь разными проектами, играю в игры, иногда пишу что-то интересное.</p>
+              <p>Этот сайт сделан в стиле Windows 98 как ностальгический эксперимент с помощью моего любимого Клода.</p>
+            </div>
+          </div>
+          <img src="dver.png" alt="Dver" style="width:180px;height:auto;border:2px solid;border-color:#fff #808080 #808080 #fff;background:#c0c0c0;flex-shrink:0;">
+        </div>
+      </div>
       <div class="page" id="page-github">
         <h2>🐙 Гитахбы</h2>
         <p>Мои профили на гитхабе:</p>
@@ -861,10 +880,11 @@
   // --- Навигация ---
   const pageNames = {
     home: 'Главная',
+    about: 'Обо мне',
     github: 'Гитахбы',
     social: 'Сос сети',
   };
-  const pageIcons = { home: '🏠', github: '🐙', social: '💬' };
+  const pageIcons = { home: '🏠', about: '👤', github: '🐙', social: '💬' };
 
   async function switchPage(page) {
     // Скрываем все страницы
